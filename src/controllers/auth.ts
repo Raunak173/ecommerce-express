@@ -5,8 +5,8 @@ import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from "../secrets";
 import { BadRequestException } from "../exceptions/bad-request";
 import { ErrorCodes } from "../exceptions/root";
-import { UnprocessableEntity } from "../exceptions/validations";
 import { SignUpSchema } from "../schemas/users";
+import { NotFoundException } from "../exceptions/not-found";
 
 export const signup = async(req: Request,res:Response,next: NextFunction)=>{
         SignUpSchema.parse(req.body)
@@ -15,7 +15,7 @@ export const signup = async(req: Request,res:Response,next: NextFunction)=>{
         let user = await prismaClient.user.findFirst({where: {email:email}})
             if(user){
                 // throw Error("User already exists")
-                next(new BadRequestException("User already exists",ErrorCodes.USER_ALREADY_EXISTS))
+                throw new BadRequestException("User already exists",ErrorCodes.USER_ALREADY_EXISTS)
             }
         user = await prismaClient.user.create({
             data:{
@@ -30,13 +30,13 @@ export const signup = async(req: Request,res:Response,next: NextFunction)=>{
 export const login = async(req: Request,res:Response, next: NextFunction)=>{
     //I added next function so that i can use the express error middleware
     const {email,password} = req.body;
-    let user = await prismaClient.user.findFirst({where: {email:email}})
+    let user: any = await prismaClient.user.findFirst({where: {email:email}})
     if(!user){
-        throw Error("User does not exists")
+        throw new NotFoundException("User does not exists",ErrorCodes.USER_NOT_FOUND)
     }
     //This function takes the password given by user and also the saved password in the db and compares both of them
     if(!compareSync(password,user.password)){
-        throw Error("Wrong password")
+        throw new BadRequestException("Incorrect Password",ErrorCodes.INCORRECT_PASSWORD)
     }
     const token = jwt.sign({
         userId: user.id
