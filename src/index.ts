@@ -18,17 +18,18 @@ export const prismaClient  = new PrismaClient(
     {
         log: ["query"]
     }
-).$extends({
-    query:{
-        user:{
-            create({args,query}){
-                args.data = SignUpSchema.parse(args.data)
-                return query(args)
-            }
-        }
-    }
-}
 )
+// .$extends({
+//     query:{
+//         user:{
+//             create({args,query}){
+//                 args.data = SignUpSchema.parse(args.data)
+//                 return query(args)
+//             }
+//         }
+//     }
+// }
+// )
 
 //Now we need to extend the Prisma client to use our valiation schema
 //To use it there is a fix boiler plate
