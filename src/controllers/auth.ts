@@ -9,7 +9,6 @@ import { UnprocessableEntity } from "../exceptions/validations";
 import { SignUpSchema } from "../schemas/users";
 
 export const signup = async(req: Request,res:Response,next: NextFunction)=>{
-    try {
         SignUpSchema.parse(req.body)
         //This line performs validations
         const {email,password,name} = req.body;
@@ -26,9 +25,6 @@ export const signup = async(req: Request,res:Response,next: NextFunction)=>{
             }
         })
         res.json(user)
-    } catch (error: any) {
-        next(new UnprocessableEntity(error?.issues,"Unprocessable Entity", ErrorCodes.UNPROCESSABLE_ENTITY))
-    }
 }
 
 export const login = async(req: Request,res:Response, next: NextFunction)=>{
