@@ -10,13 +10,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//Adding role based access
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   password  String
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  addrresses Address[]
+  //One user can have multiple addresses
+
   @@map("users")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @db.Text
+  price       Decimal
+  tags        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Address {
+  id      Int     @id @default(autoincrement())
+  lineOne String
+  lineTwo String? @db.Text
+  city    String
+  country String
+  pincode String
+
+  //Relation with User
+  //One address will be related to a user 
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  //Here the userId field will reference to the id of a user
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("address")
 }

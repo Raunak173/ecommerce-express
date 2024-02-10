@@ -8,7 +8,7 @@ import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from "../secrets"
 import { prismaClient } from ".."
 
-export const authMiddleware = async(req: Request, res: Response, next: NextFunction)=>{
+export const authMiddleware:any = async(req: Request, res: Response, next: NextFunction)=>{
    //extracting the token from header
    //if token is not present throw unauthorised error
    //if token is present then verify and extract the payload
