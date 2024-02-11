@@ -28,6 +28,9 @@ model User {
   addrresses Address[]
   //One user can have multiple addresses
 
+  defaultShippingAddressId Int?
+  defaultBillingAddressId  Int?
+
   @@map("users")
 }
 
