@@ -28,6 +28,9 @@ model User {
   addrresses Address[]
   //One user can have multiple addresses
 
+  cartItems CartItem[]
+  //One user wil have cart items
+
   defaultShippingAddressId Int?
   defaultBillingAddressId  Int?
 
@@ -42,6 +45,9 @@ model Product {
   tags        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  cartItems CartItem[]
+  //One Product wil have cart items
 
   @@map("products")
 }
@@ -64,4 +70,26 @@ model Address {
   updatedAt DateTime @updatedAt
 
   @@map("address")
+}
+
+model CartItem {
+  id       Int @id @default(autoincrement())
+  quantity Int
+
+  //Relation with User
+  //cart item will be related to a user 
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  //Here the userId field will reference to the id of a user
+
+  //Relation with Product
+  //cart item will be related to a product 
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  //Here the userId field will reference to the id of a user
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cart_items")
 }
